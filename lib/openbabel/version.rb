@@ -1,4 +1,4 @@
 module OpenBabel
-  VERSION = '2.3.1'
-  GEMVERSION = VERSION + '.9'
+  VERSION = '2.3.2'
+  GEMVERSION = VERSION + '.0'
 end
