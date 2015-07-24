@@ -30,6 +30,8 @@ begin
     system "curl -L -d use_mirror=netcologne 'http://downloads.sourceforge.net/project/openbabel/openbabel/#{ob_num_ver}/openbabel-#{ob_num_ver}.tar.gz' | tar xz"
     system "sed -i -e 's/-Wl,-flat_namespace//;s/-flat_namespace//' #{File.join ruby_src_dir, "extconf.rb"}" # remove unrecognized compiler option
     system "sed -i -e 's/Init_OpenBabel/Init_openbabel/g' #{File.join ruby_src_dir,"*cpp"}" # fix swig bindings
+    system "sed  -i -e 's/Config::CONFIG/RbConfig::CONFIG/' #{File.join src_dir, "scripts", "CMakeLists.txt" }" # fix Ruby Config
+    system "sed  -i -e 's/Config::CONFIG/RbConfig::CONFIG/' #{File.join ruby_src_dir, "extconf.rb" }" # fix Ruby Config
   end
   FileUtils.mkdir_p build_dir
   FileUtils.mkdir_p install_dir
@@ -74,7 +76,8 @@ install:
 	mkdir -p #{lib_dir}
 	mv openbabel.#{RbConfig::CONFIG["DLEXT"]} #{lib_dir}
 EOF
+  FileUtils.remove_entry_secure src_dir, build_dir
 	end
 ensure
-  FileUtils.remove_entry_secure src_dir, build_dir
+  # Do NOT remove scr_dir and build_dir after build fails, they are necessary for debugging.
 end
