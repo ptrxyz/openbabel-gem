@@ -1,4 +1,4 @@
-require 'openbabel/openbabel'
+require_relative '../openbabel/lib/openbabel'
 require 'openbabel/version'
 # http://sourceforge.net/mailarchive/message.php?msg_id=31065700
 OpenBabel::OBConversion.new # required to load plugins
