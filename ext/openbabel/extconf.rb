@@ -6,8 +6,6 @@ main_dir = File.expand_path(File.join(File.dirname(__FILE__),"..",".."))
 
 # install OpenBabel
 
-openbabel_version = "2.3.2"
-
 openbabel_dir = File.join main_dir, "openbabel"
 src_dir = openbabel_dir 
 build_dir = File.join src_dir, "build"
