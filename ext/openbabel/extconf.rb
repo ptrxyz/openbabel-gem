@@ -24,7 +24,7 @@ FileUtils.mkdir_p openbabel_dir
 Dir.chdir main_dir do
   FileUtils.rm_rf src_dir
   puts "Downloading OpenBabel sources"
-  system "git clone https://github.com/ComPlat/openbabel.git"
+  system "git clone https://github.com/ComPlat/openbabel.git --branch 'hot-fix-svg'"
 end
 
 FileUtils.mkdir_p build_dir
