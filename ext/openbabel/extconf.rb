@@ -47,6 +47,43 @@ Dir.chdir build_dir do
   ENV["PKG_CONFIG_PATH"] = File.dirname(File.expand_path(Dir["#{install_dir}/**/openbabel*pc"].first))
 end
 
+
+
+
+
+
+
+# compile ruby bindings
+puts "Compiling and installing OpenBabel Ruby bindings."
+Dir.chdir ruby_src_dir do
+  # fix rpath
+  system "sed -i 's|with_ldflags.*$|with_ldflags(\"#\$LDFLAGS -dynamic -Wl,-rpath,#{install_lib_dir}\") do|' #{File.join(ruby_src_dir,'extconf.rb')}" unless have_library('openbabel')
+  # get include and lib from pkg-config
+  ob_include=`pkg-config openbabel-2.0 --cflags-only-I`.sub(/\s+/,'').sub(/-I/,'')
+  ob_lib=`pkg-config openbabel-2.0 --libs-only-L`.sub(/\s+/,'').sub(/-L/,'')
+  system "#{RUBY} extconf.rb --with-openbabel-include=#{ob_include} --with-openbabel-lib=#{ob_lib}"
+  system "make -j#{nr_processors}"
+end
+FileUtils.cp(ruby_src_dir+"/openbabel.#{RbConfig::CONFIG["DLEXT"]}", "./")
+File.open('Makefile', 'w') do |makefile|
+  makefile.write <<"EOF"
+.PHONY: openbabel.#{RbConfig::CONFIG["DLEXT"]}
+openbabel.#{RbConfig::CONFIG["DLEXT"]}:
+chmod 755 openbabel.#{RbConfig::CONFIG["DLEXT"]}
+
+.PHONY: install
+install:
+mkdir -p #{lib_dir}
+mv openbabel.#{RbConfig::CONFIG["DLEXT"]} #{lib_dir}
+EOF
+FileUtils.remove_entry_secure src_dir, build_dir
+end
+
+
+
+
+
+
 # create a fake Makefile
 File.open(File.join(File.dirname(__FILE__),"Makefile"),"w+") do |makefile|
   makefile.puts "all:\n\ttrue\n\ninstall:\n\ttrue\n"
