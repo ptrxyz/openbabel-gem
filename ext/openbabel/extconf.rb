@@ -6,12 +6,11 @@ main_dir = File.expand_path(File.join(File.dirname(__FILE__),"..",".."))
 
 # install OpenBabel
 
-openbabel_dir = File.join main_dir, "openbabel"
-src_dir = openbabel_dir 
+openbabel_dir = File.join main_dir, "openbabel_src"
+src_dir = openbabel_dir
 build_dir = File.join src_dir, "build"
-install_dir = openbabel_dir 
+install_dir = File.join main_dir, "openbabel"
 install_lib_dir = File.join install_dir, "lib"
-lib_dir = File.join openbabel_dir, "lib", "openbabel"
 ruby_src_dir = File.join src_dir, "scripts", "ruby"
 
 begin
@@ -24,7 +23,7 @@ FileUtils.mkdir_p openbabel_dir
 Dir.chdir main_dir do
   FileUtils.rm_rf src_dir
   puts "Downloading OpenBabel sources"
-  system "git clone https://github.com/ComPlat/openbabel.git"
+  system "git clone https://github.com/ComPlat/openbabel.git #{src_dir}"
 end
 
 FileUtils.mkdir_p build_dir
@@ -46,6 +45,8 @@ Dir.chdir build_dir do
   system "make install"
   ENV["PKG_CONFIG_PATH"] = File.dirname(File.expand_path(Dir["#{install_dir}/**/openbabel*pc"].first))
 end
+
+FileUtils.remove_dir(openbabel_dir)
 
 # create a fake Makefile
 File.open(File.join(File.dirname(__FILE__),"Makefile"),"w+") do |makefile|
