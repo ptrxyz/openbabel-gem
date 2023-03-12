@@ -34,7 +34,7 @@ Dir.chdir build_dir do
   # set rpath for local installations
   # http://www.cmake.org/Wiki/CMake_RPATH_handling
   # http://vtk.1045678.n5.nabble.com/How-to-force-cmake-not-to-remove-install-rpath-td5721193.html
-  cmake += " -DCMAKE_INSTALL_RPATH:STRING=\"#{install_lib_dir}\"" 
+  # cmake += " -DCMAKE_INSTALL_RPATH:STRING=\"#{install_lib_dir}\"" 
   system cmake
 end
 
